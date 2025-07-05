@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import io from 'socket.io-client';
 import Message from './Message';
+import { socketUrl } from './config';
 
 function Chat({ user, onLogout }) {
   const [messages, setMessages] = useState([]);
@@ -11,7 +12,7 @@ function Chat({ user, onLogout }) {
 
   useEffect(() => {
     // Create socket connection
-    const newSocket = io('http://localhost:3001', {
+    const newSocket = io(socketUrl, {
       transports: ['websocket', 'polling'],
       timeout: 5000
     });
@@ -19,7 +20,7 @@ function Chat({ user, onLogout }) {
     // Listen for connection status
     newSocket.on('connect', () => {
       setIsConnected(true);
-      console.log('Connected to server');
+      console.log('Connected to server at:', socketUrl);
       
       // Join room after connection
       newSocket.emit('join-room', user.room);
